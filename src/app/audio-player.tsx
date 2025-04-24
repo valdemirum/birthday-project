@@ -45,7 +45,7 @@ export default function AudioPlayer({ audioUrl, title, shareUrl, className }: {a
         return `${hours > 0 ? `${hours}:` : ''}${minutes
             .toString()
             .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    };
+    };   
 
     return (
         <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 px-10 py-5 items-center h-fit bg-white bg-gradient-to-br from-blue-100 via-blue-50 to-blue-200 dark:bg-gradient-to-br dark:from-blue-950 dark:via-cyan-950 dark:to-zinc-900 rounded-4xl ${className} hover:scale-105 transition-transform duration-200 cursor-pointer`}>
