@@ -10,8 +10,11 @@ export default function AudioPlayer({ audioUrl, title, shareUrl, className }: {a
     const [duration, setDuration] = useState(0);
 
     useEffect(() => {
-        const audio = document.getElementById(`audio-${title}`);
-        const playBtn = document.getElementById(`play-audio-${title}`);
+        const audioElement = document.getElementById(`audio-${title}`);
+        const playBtnElement = document.getElementById(`play-audio-${title}`);
+        if (!audioElement || !playBtnElement) return;
+        const audio = audioElement as HTMLAudioElement;
+        const playBtn = playBtnElement as HTMLButtonElement;
 
         playBtn.addEventListener('click', function () {
             if (isPlaying) {
@@ -35,7 +38,7 @@ export default function AudioPlayer({ audioUrl, title, shareUrl, className }: {a
         });
     }, [isPlaying]);
 
-    const formatTime = (time) => {
+    const formatTime = ({time: time}: {time: any}) => {
         const hours = Math.floor(time / 3600);
         const minutes = Math.floor((time % 3600) / 60);
         const seconds = Math.floor(time % 60);
@@ -55,7 +58,7 @@ export default function AudioPlayer({ audioUrl, title, shareUrl, className }: {a
                 </button>
 
                 <span className="ml-2 text-sm">
-                    {formatTime(currentTime)} / {formatTime(duration)}
+                    {formatTime({ time: currentTime })} / {formatTime({ time: duration })}
                 </span>
             </div>
             <audio id={`audio-${title}`} src={audioUrl}>
