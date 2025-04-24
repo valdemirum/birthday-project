@@ -1,103 +1,129 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect } from 'react';
+import AudioPlayer from './audio-player';
+import Lyrics from './lyrics';
+import { ChevronDown } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Bricolage_Grotesque } from 'next/font/google';
+
+const bricolage = Bricolage_Grotesque({
+    subsets: ['latin'],
+    weight: '400',
+    variable: '--font-bricolage',
+});
+
+const transition = { duration: 1, ease: [0.25, 0.1, 0.25, 1] };
+const variants = {
+    hidden: { filter: 'blur(10px)', transform: 'translateY(20%)', opacity: 0 },
+    visible: { filter: 'blur(0)', transform: 'translateY(0)', opacity: 1 },
+};
+
+const text = 'Happy Birthday!';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    const words = text.split(' ');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    useEffect(() => {
+        function createConfettiPiece() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.backgroundColor = randomColor();
+
+            const direction = Math.random() < 0.5 ? -1 : 1;
+            const x = direction * (Math.random() * 700 + 100) + 'px';
+            const y = -(Math.random() * 800 + 200) + 'px';
+
+            confetti.style.setProperty('--x', x);
+            confetti.style.setProperty('--y', y);
+            confetti.style.left = '50%';
+            confetti.style.position = 'absolute';
+            confetti.style.width = '10px';
+            confetti.style.height = '10px';
+            confetti.style.animation = `explode ${
+                Math.random() * 1 + 1
+            }s ease-out forwards`;
+
+            document.body.appendChild(confetti);
+
+            setTimeout(() => {
+                confetti.remove();
+            }, 2000);
+        }
+
+        function randomColor() {
+            const colors = [
+                '#FF4136',
+                '#2ECC40',
+                '#FFDC00',
+                '#0074D9',
+                '#B10DC9',
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function explodeConfetti(count = 40) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(createConfettiPiece, i * 15);
+            }
+        }
+
+        explodeConfetti(300);
+    }, []);
+
+    return (
+        <div className="overflow-auto">
+            {/* Full-screen hero section */}
+            <motion.div
+                initial="hidden"
+                whileInView="visible"
+                className="flex flex-col justify-center items-center h-screen"
+                transition={{ staggerChildren: 0.09 }}
+            >
+                <h1 className="mb-6 text-6xl font-semibold text-center md:text-7xl text-white">
+                    {words.map((word, index) => (
+                        <React.Fragment key={index}>
+                            <motion.span
+                                className="inline-block"
+                                transition={transition}
+                                variants={variants}
+                            >
+                                {word}
+                            </motion.span>
+                            {index < words.length - 1 && ' '}
+                        </React.Fragment>
+                    ))}
+                </h1>
+                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 animate-bounce">
+                    <ChevronDown size={50} />
+                </div>
+            </motion.div>
+
+            <div
+                className={`grid grid-cols-1 md:grid-cols-2 gap-5 px-[20%] py-10 bg-black ${bricolage.className}`}
+            >
+                <div className="grid grid-cols-1 gap-4">
+                    {' '}
+                    <img
+                        src="/happy-birthday.gif"
+                        alt="Happy birthday"
+                        className="rounded-4xl"
+                    />
+                    <span className='flex bg-white text-center justify-center items-center rounded-4xl'>
+                      <h1 className='text-black font-bold text-4xl md:text-6xl'>Happy Birthday!</h1>
+                    </span>
+                </div>
+                <div className="grid grid-cols-1 gap-4">
+                    <AudioPlayer
+                        audioUrl="https://cdn1.suno.ai/45c18199-e16f-4661-8afa-7a5454d1f5e3.mp3"
+                        title="May the Lord Keep You"
+                        shareUrl="https://www.suno.com/@wend"
+                        className="https://www.suno.com/@wend"
+                    />
+                    <Lyrics />
+                </div>
+            </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }
